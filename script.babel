@@ -1,0 +1,192 @@
+// No need to pay attention to the code below this comment. You have learned to use 'import' to bring in components from libraries in your React project. This is another way to do it that works better in Codepen. HashRouter is also used here instead of BrowserRouter due to Codepen. Do not be concerned about the differences. 
+const { HashRouter, Switch, Route, Link } = ReactRouterDOM
+
+// The code you should pay attention to begins after this comment.
+
+const ALBUMSDATA = [
+  { 
+    id: 1, 
+    title: "Mezzanine", 
+    artist: "Massive Attack", 
+    year: 1998, 
+    image: "https://www.innerviews.org/inner/massive/massiveattack8.png",
+    lyrics: "I'm a little curious of you in crowded scenes​................."
+  },
+  { 
+    id: 2, 
+    title: "The Ruminant Band", 
+    artist: "Fruit Bats", 
+    year: 2009,
+    image: "https://i.ytimg.com/vi/IKAg9IbaaRY/mqdefault.jpg",
+    lyrics: "You'll always have smokes if you always give buckets of love​...."
+    
+  },
+   { 
+    id: 3, 
+    title: "All I Have to Offer You (Is Me)", 
+    artist: "Charley Pride", 
+    year: 1975, 
+    image: "https://pyxis.nymag.com/v1/imgs/547/5ca/8cec77ace2d2983e50af80e0b8cf121798-charley-pride-obit.rvertical.w600.jpg",
+    lyrics: "Before you take another step there's something you should know......"
+  },
+  { 
+    id: 4, 
+    title: "I Saw the Light", 
+    artist: "Hank Williams", 
+    year: 1948, 
+    image: "https://i.guim.co.uk/img/media/9cc83b90e74f4af076e1dcd2497ba865a19c5ef3/0_182_3292_1975/500.jpg?quality=85&auto=format&fit=max&s=4f5a1630aafac14df6056a693dffb0ec",
+    lyrics: "I wandered so aimless, life filled with sin​.........................."
+  }
+];
+const SONGSDATA = [
+  { 
+    id: 1, 
+    title: "Mezzanine", 
+    artist: "Massive Attack", 
+    year: 1998, 
+    image: "https://www.innerviews.org/inner/massive/massiveattack8.png",
+    lyrics: "I'm a little curious of you in crowded scenes​................."
+  },
+  { 
+    id: 2, 
+    title: "The Ruminant Band", 
+    artist: "Fruit Bats", 
+    year: 2009,
+    image: "https://i.ytimg.com/vi/IKAg9IbaaRY/mqdefault.jpg",
+    lyrics: "You'll always have smokes if you always give buckets of love​...."
+  },
+   { 
+    id: 3, 
+    title: "All I Have to Offer You (Is Me)", 
+    artist: "Charley Pride", 
+    year: 1975, 
+    image: "https://pyxis.nymag.com/v1/imgs/547/5ca/8cec77ace2d2983e50af80e0b8cf121798-charley-pride-obit.rvertical.w600.jpg",
+    lyrics: "Before you take another step there's something you should know......"
+  },
+  { 
+    id: 4, 
+    title: "I Saw the Light", 
+    artist: "Hank Williams", 
+    year: 1948, 
+    image: "https://i.guim.co.uk/img/media/9cc83b90e74f4af076e1dcd2497ba865a19c5ef3/0_182_3292_1975/500.jpg?quality=85&auto=format&fit=max&s=4f5a1630aafac14df6056a693dffb0ec",
+    lyrics: "I wandered so aimless, life filled with sin​.........................."
+  }
+];
+
+
+function Home() {
+  return (
+    <h1>Home</h1>
+  );
+}
+
+function Songs(props) {
+  return (
+    <div>
+      <h1>Songs</h1>
+      <ul>
+        {props.songsData.map(song => (
+            <li key={song.id}>
+              <Link to={`/songs/${song.id}`} >   
+                {song.year}
+              </Link>
+            </li>
+          ))}
+      </ul>
+    </div>
+  );
+}
+
+
+function Albums(props) {
+  return (
+    <div>
+      <h1>Albums</h1>
+      <ul>
+        {props.albumsData.map(album => (
+            <li key={album.id}>
+              <Link to={`/albums/${album.id}`} >           
+                Album {album.title}, {album.year}
+              </Link>
+            </li>
+          ))}
+      </ul>
+    </div>
+  );
+}
+
+
+function MyNav() {
+  return (
+    <ul>
+      <li><Link to='/'>Home</Link></li>
+      <li><Link to='/songs'>Songs</Link></li>
+      <li><Link to='/albums'>Albums</Link></li>
+    </ul>
+  );
+}
+
+
+class Main extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      albumsData: ALBUMSDATA,
+      songsData: SONGSDATA,
+      
+    };
+  };
+  
+  render() {
+    
+    const AlbumInfo = ({match}) => {
+       const album = this.state.albumsData.filter(album => album.id === +match.params.albumId)[0];
+      return (
+        <div> 
+          {album.title} - {album.artist} - {album.year} <br/><br/>
+          <h2>Lyrics</h2> {album.lyrics} <br/><br/>
+          <img src={album.image} /> 
+        </div>
+      );
+    };
+    
+     const SongInfo = ({match}) => {
+       const song = this.state.albumsData.filter(song => song.id === +match.params.songId)[0];
+      return (
+        <div> 
+          {song.title} - {song.artist} - {song.year} <br/><br/>
+          <h2>Lyrics</h2> {song.lyrics} <br/><br/>
+          <img src={song.image} /> 
+        </div>
+      );
+    };
+      
+    return (
+      <Switch>
+       <Route exact path='/' component={Home}/>
+       <Route path='/albums/:albumId' component={AlbumInfo}/>  
+       <Route exact path='/albums' render={() => <Albums albumsData={this.state.albumsData} />} />
+       <Route path='/songs/:songId' component={SongInfo}/>  
+       <Route exact path='/songs' render={() => <Songs songsData={this.state.songsData} />} /> 
+      </Switch>
+    );
+  };
+}
+
+function App() {
+  return (
+    <div>
+      <MyNav />
+      <br />
+      <Main />
+    </div>
+  );
+}
+
+// Stop paying attention here. Below code is just to make React Router work with Codepen.
+// We are using HashRouter here, but outside of here you would use BrowserRouter for a web app.
+ReactDOM.render((
+  <HashRouter>
+    <App />
+  </HashRouter>
+), document.getElementById('root'));
